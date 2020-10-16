@@ -19,6 +19,7 @@ client.connect(err => {
     const agencyCollection = client.db("agencyDatabase").collection("agencyInfo");
     const orderCollection = client.db("agencyDatabase").collection("order");
     const reviewCollection = client.db("agencyDatabase").collection("review");
+    const addServiceCollection = client.db("agencyDatabase").collection("addService");
 
     app.post('/addOrder', (req, res) => {
         const order = req.body;
@@ -53,6 +54,35 @@ client.connect(err => {
                 res.send(documents);
             })
     })
+
+
+    app.post('/addService', (req, res) => {
+        const service = req.body;
+        console.log(service);
+        addServiceCollection.insertOne(service)
+            .then(result => {
+                res.send(result.insertedCount > 0)
+            })
+    })
+
+    app.get('/service', (req, res) => {
+        // console.log(req.query.email)
+        addServiceCollection.find({ email: req.query.email })
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
+
+
+
+    app.get('/allService', (req, res) => {
+        orderCollection.find({})
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
+
+
 
     app.get('/', (req, res) => {
         res.send('Creative Agency!')
